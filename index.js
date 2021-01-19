@@ -1,10 +1,23 @@
-const http = require ("http");
-const port = 8080;
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8080;
 
-http.createServer((req, res) => {
-	res.writeHead(200); // Status code in header
-	res.write("Ravit Ettedgui"); // Send res body (can write multiple times)
-	res.end(); // Send & close connection
-}).listen(port); // Listen for connection on this port
 
-console.log(`Listening on port ${port}`);
+app.get('/api/v1/githubUser/:githubUserName/avatar', (req, res) => {
+    res.send(200, 'OK');
+});
+
+app.get('/api/v1/githubUser/:githubUserName/repo/:repoName', (req, res) => {
+    res.send(200, 'OK');
+});
+
+app.get('/api/v1/githubUser/:githubUserName/repo/:repoName/contributers', (req, res) => {
+    res.send(200, 'OK');
+});
+
+app.all('*', (req, res) => {
+    res.send(404, 'Page not found');
+});
+
+
+app.listen(port, () => console.log(`express server listening on port ${port}`));
