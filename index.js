@@ -27,7 +27,7 @@ app.param("repoName", (req, res, next, value) => {
 //Routing section
 app.get("/api/v1/githubUser/:githubUserName/avatar", (req, res) => {
   res.send(200, "OK");
-});
+}); //
 
 app.get("/api/v1/githubUser/:githubUserName/repo/:repoName", (req, res) => {
   res.send(200, "OK");
