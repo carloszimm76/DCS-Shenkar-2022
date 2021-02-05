@@ -3,7 +3,7 @@ const { resourceUsage } = require("process");
 const stringcheker = require("./stringcheker");
 const app = express();
 const gitAxios = require("./githubAPI");
-var GitHub = require('github-api');
+//var GitHub = require('github-api');
 const { json } = require("express");
 const port = process.env.PORT || 8080;
 app.use("/assets",express.static(`${__dirname/'public'}`));
@@ -51,9 +51,24 @@ app.get("/api/v1/githubUser/:githubUserName/avatar", (req, res) => {
                 </html>`);
   })
 });
-
+//repo details
 app.get("/api/v1/githubUser/:githubUserName/repo/:repoName", (req, res) => {
-  res.send(200, "OK");
+  //res.send(200, "OK");
+  let nameHub = req.url.split('/')[4];
+  let nameRepo = req.url.split('/')[6];
+  let obj;
+  gitAxios.getReposByNameAndRepo(nameHub,nameRepo).then(userObj=> {obj = userObj;
+    let path;
+    try{
+      if(obj.data!=null)
+      path=obj;
+      res.send(200, JSON.stringify(path.data));
+      }
+      catch(err){
+        path ='Page not found'
+        res.send(404, path);
+      } 
+  })
 });
 
 app.get(
