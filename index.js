@@ -6,7 +6,9 @@ const gitAxios = require("./githubAPI");
 //var GitHub = require('github-api');
 const { json } = require("express");
 const port = process.env.PORT || 8080;
+
 app.use("/assets",express.static(`${__dirname/'public'}`));
+
 // Middleware section
 app.param("githubUserName", (req, res, next, value) => {
   const githubUserName = value;
@@ -17,6 +19,7 @@ app.param("githubUserName", (req, res, next, value) => {
     next();
   }
 });
+
 app.param("repoName", (req, res, next, value) => {
   const repoName = value;
   if (stringcheker.checkStringIfHasSpacesOrNumbers(repoName)) {
@@ -71,12 +74,31 @@ app.get("/api/v1/githubUser/:githubUserName/repo/:repoName", (req, res) => {
   })
 });
 
-app.get(
-  "/api/v1/githubUser/:githubUserName/repo/:repoName/contributers",
-  (req, res) => {
-    res.send(200, "OK");
-  }
-);
+app.get("/api/v1/githubUser/:githubUserName/repo/:repoName/contributers", (req, res) => {
+  
+  let userName = req.url.split('/')[4];
+  let repoName = req.url.split('/')[6];
+
+  let obj;
+
+  gitAxios.getReposByContributors(userName,repoName).then(conObj=> {
+
+    obj = conObj;
+    
+    try{
+
+      if(obj.data!=null)
+      res.send(200, JSON.stringify(obj.data));
+
+    }catch(err){
+
+      path ='parameter incorrect'
+      res.send(404, obj);
+      
+    } 
+  });
+
+});
 
 app.all("*", (req, res) => {
   res.send(404, "Page not found");
